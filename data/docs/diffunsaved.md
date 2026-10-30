@@ -4,7 +4,7 @@ Diff every modified buffer against its saved state on disk.
 
 <!-- panvimdoc-ignore-start -->
 
-![Diffing an edited buffer against what is still on disk](https://raw.githubusercontent.com/mbfoss/keystone.nvim/refs/heads/assets/unsaved.gif)
+![Diffing an edited buffer against what is still on disk](https://raw.githubusercontent.com/<owner>/keystone.nvim/refs/heads/assets/unsaved.gif)
 
 <!-- panvimdoc-ignore-end -->
 

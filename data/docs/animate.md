@@ -5,7 +5,7 @@ jumping straight to the destination.
 
 <!-- panvimdoc-ignore-start -->
 
-![Scrolling a file from top to bottom with animate enabled](https://raw.githubusercontent.com/mbfoss/keystone.nvim/refs/heads/assets/animate.gif)
+![Scrolling a file from top to bottom with animate enabled](https://raw.githubusercontent.com/<owner>/keystone.nvim/refs/heads/assets/animate.gif)
 
 <!-- panvimdoc-ignore-end -->
 

@@ -8,7 +8,7 @@ has to be torn down after the load.
 
 <!-- panvimdoc-ignore-start -->
 
-![Opening and moving around a 23 MB, 240k-line log](https://raw.githubusercontent.com/mbfoss/keystone.nvim/refs/heads/assets/largefile.gif)
+![Opening and moving around a 23 MB, 240k-line log](https://raw.githubusercontent.com/<owner>/keystone.nvim/refs/heads/assets/largefile.gif)
 
 <!-- panvimdoc-ignore-end -->
 

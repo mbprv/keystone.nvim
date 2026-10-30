@@ -7,7 +7,7 @@ a preview window on the right of it.
 
 <!-- panvimdoc-ignore-start -->
 
-![A vim.ui.select prompt with fuzzy filtering and a live preview](https://raw.githubusercontent.com/mbfoss/keystone.nvim/refs/heads/assets/select.gif)
+![A vim.ui.select prompt with fuzzy filtering and a live preview](https://raw.githubusercontent.com/<owner>/keystone.nvim/refs/heads/assets/select.gif)
 
 <!-- panvimdoc-ignore-end -->
 

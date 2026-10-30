@@ -6,7 +6,7 @@ Neovim >= 0.11 the `omnifunc` source is the built-in `vim.lsp.completion`.
 
 <!-- panvimdoc-ignore-start -->
 
-![Autotriggered LSP candidates, narrowed by typing and confirmed with <CR>](https://raw.githubusercontent.com/mbfoss/keystone.nvim/refs/heads/assets/completion.gif)
+![Autotriggered LSP candidates, narrowed by typing and confirmed with <CR>](https://raw.githubusercontent.com/<owner>/keystone.nvim/refs/heads/assets/completion.gif)
 
 <!-- panvimdoc-ignore-end -->
 

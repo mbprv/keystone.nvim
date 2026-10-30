@@ -6,7 +6,7 @@ can be turned off separately.
 
 <!-- panvimdoc-ignore-start -->
 
-![The scope guide along the block under the cursor, with indent guides on every level](https://raw.githubusercontent.com/mbfoss/keystone.nvim/refs/heads/assets/scope.png)
+![The scope guide along the block under the cursor, with indent guides on every level](https://raw.githubusercontent.com/<owner>/keystone.nvim/refs/heads/assets/scope.png)
 
 <!-- panvimdoc-ignore-end -->
 

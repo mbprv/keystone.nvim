@@ -4,7 +4,7 @@ A file selector for navigating the filesystem.
 
 <!-- panvimdoc-ignore-start -->
 
-![Descending through directories with the preview pane on](https://raw.githubusercontent.com/mbfoss/keystone.nvim/refs/heads/assets/explore.gif)
+![Descending through directories with the preview pane on](https://raw.githubusercontent.com/<owner>/keystone.nvim/refs/heads/assets/explore.gif)
 
 <!-- panvimdoc-ignore-end -->
 

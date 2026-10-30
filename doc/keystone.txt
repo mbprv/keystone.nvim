@@ -27,7 +27,7 @@ Each module is independent, and none is active unless you name it in `setup()`.
 With Neovim >= 0.12
 
 >lua
-    vim.pack.add({ "https://github.com/mbfoss/keystone.nvim" })
+    vim.pack.add({ "https://github.com/<owner>/keystone.nvim" })
     
     -- Every module, with a starting point. Change any value.
     require("keystone").setup({
@@ -57,7 +57,7 @@ With Neovim >= 0.12
     })
 <
 
-Any other plugin manager works too; point it at `mbfoss/keystone.nvim` and call
+Any other plugin manager works too; point it at `<owner>/keystone.nvim` and call
 `setup()` yourself.
 
 lazy.nvim <https://github.com/folke/lazy.nvim>: the same table goes in `opts`.
@@ -65,7 +65,7 @@ It has to load at startup, since nothing is switched on until `setup()` runs.
 
 >lua
     {
-      "mbfoss/keystone.nvim",
+      "<owner>/keystone.nvim",
       lazy = false,
       opts = {}, -- the module table from above
     }
@@ -237,7 +237,7 @@ same options table directly:
 3. Modules                                                  *keystone-modules*
 
 The symbol tree, call tree, references window and definition motions moved to
-lspnav.nvim <https://github.com/mbfoss/lspnav.nvim>.
+lspnav.nvim <https://github.com/<owner>/lspnav.nvim>.
 
 Each module has its own help page:
 

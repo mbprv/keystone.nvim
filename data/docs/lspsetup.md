@@ -8,7 +8,7 @@ inlay hint, document highlight and signature help settings below.
 
 <!-- panvimdoc-ignore-start -->
 
-![Diagnostics, hover on an annotated function, and reference highlighting](https://raw.githubusercontent.com/mbfoss/keystone.nvim/refs/heads/assets/lspconfig.gif)
+![Diagnostics, hover on an annotated function, and reference highlighting](https://raw.githubusercontent.com/<owner>/keystone.nvim/refs/heads/assets/lspconfig.gif)
 
 <!-- panvimdoc-ignore-end -->
 

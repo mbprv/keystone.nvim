@@ -5,7 +5,7 @@ is available for the buffer's language.
 
 <!-- panvimdoc-ignore-start -->
 
-![Treesitter folds following the syntax tree](https://raw.githubusercontent.com/mbfoss/keystone.nvim/refs/heads/assets/tsconfig.gif)
+![Treesitter folds following the syntax tree](https://raw.githubusercontent.com/<owner>/keystone.nvim/refs/heads/assets/tsconfig.gif)
 
 <!-- panvimdoc-ignore-end -->
 

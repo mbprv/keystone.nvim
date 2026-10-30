@@ -4,7 +4,7 @@ A floating notification UI, optionally including LSP progress messages.
 
 <!-- panvimdoc-ignore-start -->
 
-![Notifications of each level stacking and timing out](https://raw.githubusercontent.com/mbfoss/keystone.nvim/refs/heads/assets/notify.gif)
+![Notifications of each level stacking and timing out](https://raw.githubusercontent.com/<owner>/keystone.nvim/refs/heads/assets/notify.gif)
 
 <!-- panvimdoc-ignore-end -->
 

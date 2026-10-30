@@ -7,7 +7,7 @@ mode; `<C-r>` in insert and command-line mode.
 
 <!-- panvimdoc-ignore-start -->
 
-![The follow-up-key popup after pressing g](https://raw.githubusercontent.com/mbfoss/keystone.nvim/refs/heads/assets/clue.gif)
+![The follow-up-key popup after pressing g](https://raw.githubusercontent.com/<owner>/keystone.nvim/refs/heads/assets/clue.gif)
 
 <!-- panvimdoc-ignore-end -->
 

@@ -5,7 +5,7 @@ registered provider, or an inline function.
 
 <!-- panvimdoc-ignore-start -->
 
-![The sections reacting: mode, git branch, symbol path, diagnostics, position](https://raw.githubusercontent.com/mbfoss/keystone.nvim/refs/heads/assets/statusline.gif)
+![The sections reacting: mode, git branch, symbol path, diagnostics, position](https://raw.githubusercontent.com/<owner>/keystone.nvim/refs/heads/assets/statusline.gif)
 
 <!-- panvimdoc-ignore-end -->
 

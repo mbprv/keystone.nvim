@@ -4,7 +4,7 @@ A file explorer in a side window.
 
 <!-- panvimdoc-ignore-start -->
 
-![Creating a directory and a file, renaming, marking files to move and copy, deleting, and the help float](https://raw.githubusercontent.com/mbfoss/keystone.nvim/refs/heads/assets/filetree.gif)
+![Creating a directory and a file, renaming, marking files to move and copy, deleting, and the help float](https://raw.githubusercontent.com/<owner>/keystone.nvim/refs/heads/assets/filetree.gif)
 
 <!-- panvimdoc-ignore-end -->
 

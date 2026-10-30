@@ -4,7 +4,7 @@ Editor behaviours, each behind its own flag, with the defaults shown below.
 
 <!-- panvimdoc-ignore-start -->
 
-![The yank flash, writing into a directory that does not exist yet, and q closing a help buffer](https://raw.githubusercontent.com/mbfoss/keystone.nvim/refs/heads/assets/tweaks.gif)
+![The yank flash, writing into a directory that does not exist yet, and q closing a help buffer](https://raw.githubusercontent.com/<owner>/keystone.nvim/refs/heads/assets/tweaks.gif)
 
 <!-- panvimdoc-ignore-end -->
 
