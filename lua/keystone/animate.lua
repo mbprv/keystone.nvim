@@ -7,13 +7,13 @@ local cfgutil = require("keystone.util.config")
 local _ns_name_onkey = "keystone_animate_onkey"
 local _augroup_name = "keystone_animate"
 
----@alias keysstone.animate.easing_fn fun(i:number):number
+---@alias keystone.animate.easing_fn fun(i:number):number
 
 ---@class keystone.animate.Config
 ---@field enabled boolean?
 ---@field filter function?
----@field easing keysstone.animate.easing_fn?
----@field speed number? Animation speed in milliseconds per line (default: 8)
+---@field easing keystone.animate.easing_fn?
+---@field speed number? Animation speed in milliseconds per line (default: 20)
 ---@field duration number? Hard cap on animation duration in milliseconds (default: 300)
 ---@field step number? Frame interval in milliseconds (default: 16)
 
@@ -35,16 +35,17 @@ local function _keycode(str)
 end
 
 local function _filter(buf)
-    if vim.b[buf].keystone_scroll ~= false and vim.bo[buf].buftype ~= "terminal" then
-        if M.config.filter then return M.config.filter(buf) else return true end
-    end
-    return false
+    return vim.b[buf].keystone_scroll ~= false
+        and vim.bo[buf].buftype ~= "terminal"
+        and (not M.config.filter or M.config.filter(buf))
 end
 
 --- Determines the amount of scrollable lines between two window views,
 --- taking folds and virtual lines into account.
+---@param win number
 ---@param from vim.fn.winsaveview.ret
 ---@param to vim.fn.winsaveview.ret
+---@return number
 local function _scroll_lines(win, from, to)
     if from.topline == to.topline then
         return math.abs(from.topfill - to.topfill)
@@ -79,8 +80,8 @@ local _easing = {
 ---@param from number
 ---@param to number
 ---@param cb fun(value:number, ctx:{done:boolean})
----@param opts? { duration?:number, step?:number, easing?:keysstone.animate.easing_fn }
----@return {stop:function, extend:fun(new_to:number, new_duration?:number, new_easing?:keysstone.animate.easing_fn)}
+---@param opts? { duration?:number, step?:number, easing?:keystone.animate.easing_fn }
+---@return {stop:function, extend:fun(new_to:number, new_duration?:number, new_easing?:keystone.animate.easing_fn)}
 local function _animate(from, to, cb, opts)
     opts = opts or {}
 
@@ -118,7 +119,6 @@ local function _animate(from, to, cb, opts)
     return { stop = stop, extend = extend }
 end
 
-
 ---@alias keystone.animate.View {topline:number, lnum:number}
 
 ---@class keystone.animate.AnimParams
@@ -131,14 +131,13 @@ end
 ---@field scrolled number
 
 ---@class keystone.animate.State
----@field anim? {stop:function, extend:fun(new_to:number, new_duration?:number, new_easing?:keysstone.animate.easing_fn)}
+---@field anim? {stop:function, extend:fun(new_to:number, new_duration?:number, new_easing?:keystone.animate.easing_fn)}
 ---@field _anim_params? keystone.animate.AnimParams
 ---@field win number
 ---@field buf number
 ---@field view vim.fn.winsaveview.ret
 ---@field current vim.fn.winsaveview.ret
 ---@field target vim.fn.winsaveview.ret
----@field scrolloff number
 ---@field changedtick number
 ---@field _wo vim.wo Backup of window options
 local State = {}
@@ -149,7 +148,6 @@ local _mouse_scrolling = false
 M.enabled = false
 local _SCROLL_UP, _SCROLL_DOWN = _keycode("<c-y>"), _keycode("<c-e>")
 
-local _stats = { targets = 0, animating = 0, reset = 0, skipped = 0, mousescroll = 0, scrolls = 0 }
 local _states = {} ---@type table<number, keystone.animate.State>
 
 local function _is_enabled(buf)
@@ -230,7 +228,6 @@ local function _get_state(win)
         ret.target = vim.deepcopy(view)
         ret.win = win
     end
-    ret.scrolloff = ret._wo.scrolloff or vim.wo[win][0].scrolloff
     ret.view = view
     _states[win] = ret
     return ret
@@ -243,6 +240,49 @@ local function _reset_state(win)
         _states[win]:stop()
         _states[win] = nil
     end
+end
+
+--- The user's `scrolloff`, which the animation drops to 0 while it runs.
+---@param state keystone.animate.State
+---@return integer
+local function _user_scrolloff(state)
+    local so = state._wo.scrolloff or vim.wo[state.win][0].scrolloff
+    return so >= 0 and so or vim.go.scrolloff
+end
+
+--- Move the cursor of `view` clear of the user's `scrolloff` margin the way
+--- `cursor_correct()` would. Call with the window showing `view`.
+---@param view vim.fn.winsaveview.ret
+---@param scrolloff integer
+---@return vim.fn.winsaveview.ret
+local function _correct_scrolloff(view, scrolloff)
+    if scrolloff <= 0 then
+        return view
+    end
+    local height = vim.api.nvim_win_get_height(0)
+    -- Vim cannot honour margins larger than the window; it centers instead.
+    local above = math.min(scrolloff, math.floor((height - 1) / 2))
+    local below = above
+    -- A file edge relaxes the margin on its own side only.
+    if vim.fn.line("w0") == 1 then
+        above = 0
+    end
+    if vim.fn.line("w$") == vim.fn.line("$") then
+        below = 0
+    end
+    local row = vim.fn.winline()
+    local rows = 0
+    if row < above + 1 then
+        rows = above + 1 - row
+    elseif row > height - below then
+        rows = height - below - row
+    end
+    if rows == 0 then
+        return view
+    end
+    vim.cmd(("keepjumps normal! %d%s"):format(math.abs(rows), rows > 0 and "gj" or "gk"))
+    local moved = vim.fn.winsaveview()
+    return moved.lnum ~= view.lnum and moved or view
 end
 
 function M.enable()
@@ -368,7 +408,6 @@ function M.check(win)
     if _mouse_scrolling then
         state:stop()
         _mouse_scrolling = false
-        _stats.mousescroll = _stats.mousescroll + 1
         state.current = vim.deepcopy(state.view)
         return
     end
@@ -382,14 +421,13 @@ function M.check(win)
     -- view is already where the last frame left it, so the pending target has
     -- to stand, or the final restore stops a frame short of it.
     if p.scrolls == 0 then
-        _stats.skipped = _stats.skipped + 1
         return
     end
 
     -- A scroll of one display line or less is not worth animating. Display
-    -- lines, not toplines, so a closed fold can't fake a jump.
-    if p.scrolls <= 1 then
-        _stats.skipped = _stats.skipped + 1
+    -- lines, not toplines, so a closed fold can't fake a jump. A running
+    -- animation still has to take it, or it keeps its stale target.
+    if p.scrolls <= 1 and not state.anim then
         state.target = vim.deepcopy(state.view)
         state.current = vim.deepcopy(state.view)
         return
@@ -397,10 +435,14 @@ function M.check(win)
 
     state.target = vim.deepcopy(state.view)
 
-    _stats.scrolls = _stats.scrolls + 1
-    _stats.targets = _stats.targets + 1
-
     vim.api.nvim_win_call(state.win, function()
+        vim.fn.winrestview(state.target)
+        -- A retarget scroll ran with the animation's scrolloff=0, so Vim left
+        -- the cursor at the edge. Put it where the user's scrolloff would,
+        -- or restoring the option at the end scrolls the view backwards.
+        if state.anim then
+            state.target = _correct_scrolloff(state.target, _user_scrolloff(state))
+        end
         p.move_to = vim.fn.winline()
         vim.fn.winrestview(state.current) -- rewind to current animated position
         p.move_from = vim.fn.winline()
@@ -441,22 +483,28 @@ function M.check(win)
 
             local _p = state._anim_params ---@type keystone.animate.AnimParams
             local count = vim.v.count -- backup count
+
+            -- Nothing to do until the eased value reaches the next whole line.
+            -- Touching the cursor or options here redraws without moving the
+            -- view, which at the file edges is a visible flicker.
+            local scroll_target = math.floor(value)
+            local scroll = scroll_target - _p.scrolled --[[@as number]]
+            if scroll <= 0 then
+                return
+            end
+            _p.scrolled = _p.scrolled + scroll
+
             -- hide the cursorline for the moves, restore it before returning
             local cursorline = vim.wo[win][0].cursorline
             vim.wo[win][0].cursorline = false
 
             -- scroll
-            local scroll_target = math.floor(value)
-            local scroll = scroll_target - _p.scrolled --[[@as number]]
-            if scroll > 0 then
-                _p.scrolled = _p.scrolled + scroll
-                vim.cmd(("keepjumps normal! %d%s"):format(scroll, _p.down and _SCROLL_DOWN or _SCROLL_UP))
-            end
+            vim.cmd(("keepjumps normal! %d%s"):format(scroll, _p.down and _SCROLL_DOWN or _SCROLL_UP))
 
-            -- move the cursor vertically. `H` counts buffer lines while the
-            -- animation interpolates screen rows, which drift apart on wrapped
-            -- or folded text; gj/gk count display lines, like the scroll does.
-            local move = math.floor(value * math.abs(_p.move_to - _p.move_from) / _p.scrolls)
+            -- move the cursor vertically. gj/gk count display lines like the
+            -- scroll does, unlike `H` which counts buffer lines. Derive it from
+            -- the lines scrolled: the eased value moves it without a scroll.
+            local move = math.floor(scroll_target * math.abs(_p.move_to - _p.move_from) / _p.scrolls)
             local move_target = _p.move_from + ((_p.move_to < _p.move_from) and -1 or 1) * move
             local rows = math.floor(move_target - vim.fn.winline())
             if rows ~= 0 then
