@@ -64,6 +64,10 @@ keystone-notify	keystone-notify.txt	/*keystone-notify*
 keystone-notify-commands	keystone-notify.txt	/*keystone-notify-commands*
 keystone-notify-configuration	keystone-notify.txt	/*keystone-notify-configuration*
 keystone-notify-table-of-contents	keystone-notify.txt	/*keystone-notify-table-of-contents*
+keystone-quickfix	keystone-quickfix.txt	/*keystone-quickfix*
+keystone-quickfix-configuration	keystone-quickfix.txt	/*keystone-quickfix-configuration*
+keystone-quickfix-keys	keystone-quickfix.txt	/*keystone-quickfix-keys*
+keystone-quickfix-table-of-contents	keystone-quickfix.txt	/*keystone-quickfix-table-of-contents*
 keystone-scope	keystone-scope.txt	/*keystone-scope*
 keystone-scope-api	keystone-scope.txt	/*keystone-scope-api*
 keystone-scope-configuration	keystone-scope.txt	/*keystone-scope-configuration*

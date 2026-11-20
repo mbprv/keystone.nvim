@@ -119,6 +119,9 @@ Callers today: `keystone.diffunsaved.session.open`,
   be
   torn down after the load. A `FileType <sentinel>` autocmd applies buffer-local
   tweaks and optionally restores regex syntax.
+- **quickfix**: a `FileType qf` / `BufWinEnter` hook moves the real quickfix
+  buffer into a bottom float and closes the native split; `<C-q>` reopens the
+  split under `:noautocmd`, so the hook does not adopt it again.
 - **lspsetup**: Neovim never rotates `lsp.log`. With `lsp_rolling_log`, keystone
   copies the live log to `.1` (shifting older `.N` up) and **truncates in
   place**. Truncation rather than rename is deliberate: Neovim caches an

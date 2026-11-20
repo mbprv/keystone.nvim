@@ -33,6 +33,7 @@ local _MODULES = {
   "filetree",
   "lspsetup",
   "marksigns",
+  "quickfix",
   "scope",
   "select",
   "statusline",

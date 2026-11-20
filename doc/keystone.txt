@@ -48,7 +48,8 @@ With Neovim >= 0.12
       select       = true,  -- replaces vim.ui.select
       notify       = true,  -- replaces vim.notify, adds :Notifications
       clue         = true,  -- popup of the keys that can follow a trigger
-    
+      quickfix     = true,  -- shows quickfix and location lists as a float
+
       -- Adds a command, does nothing until you run it
       filetree     = true,  -- :FileTree
       fileselector = true,  -- :FileSelector
@@ -195,7 +196,17 @@ The same configuration with every module expanded:
         builtin = { marks = true, registers = true },
         -- triggers = { ... } -- override the default trigger list
       },
-    
+      quickfix = {
+        height = 0.3,          -- float height as a fraction of the editor area
+        width  = 1.0,          -- float width as a fraction of the editor columns
+        border = "rounded",    -- nvim_open_win() border, or "none"
+        title  = true,         -- show the list title in the border
+        keys   = {
+          close = "<Esc>",     -- close the float
+          split = "<C-q>",     -- replace the float with the native split
+        },
+      },
+
       -- Adds a command, does nothing until you run it
       filetree = {
         width_ratio = 0.2,             -- fraction of the editor width (left/right)
@@ -250,6 +261,7 @@ Each module has its own help page:
 - |keystone-tsconfig| Treesitter highlighting and folding, per buffer
 - |keystone-marksigns| Shows the marks that are set in the sign column
 - |keystone-scope| Guides along the current scope and indent levels
+- |keystone-quickfix| Shows quickfix and location lists in a floating window
 - |keystone-largefile| Opens large files without Treesitter, LSP or ftplugins
 - |keystone-notify| A floating notification UI
 - |keystone-select| A floating `vim.ui.select` prompt with fuzzy filtering
