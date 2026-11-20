@@ -333,6 +333,23 @@ end
 function M.enable()
   local group = vim.api.nvim_create_augroup(_AUGROUP, { clear = true })
 
+  -- The float is a transient bar: entering any other window dismisses it.
+  vim.api.nvim_create_autocmd("WinEnter", {
+    group    = group,
+    callback = function()
+      local cur = vim.api.nvim_get_current_win()
+      local stale = {}
+      for _, state in pairs(_floats) do
+        if state.win ~= cur and vim.api.nvim_win_is_valid(state.win) then
+          table.insert(stale, state)
+        end
+      end
+      for _, state in ipairs(stale) do
+        _close(state)
+      end
+    end,
+  })
+
   vim.api.nvim_create_autocmd("BufWinEnter", {
     group    = group,
     callback = function(ev)
