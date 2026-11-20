@@ -88,7 +88,7 @@ describe("keystone.quickfix", function()
     assert.equal(origin, vim.api.nvim_get_current_win())
   end)
 
-  it("jumps to an entry in the original window, leaving the float open", function()
+  it("jumps to an entry in the original window, closing the float", function()
     local origin = vim.api.nvim_get_current_win()
     local target = vim.api.nvim_create_buf(true, false)
     vim.api.nvim_buf_set_lines(target, 0, -1, false, { "first", "second" })
@@ -102,8 +102,37 @@ describe("keystone.quickfix", function()
 
     feed("<CR>")
 
-    wait_for(function() return vim.api.nvim_get_current_win() == origin end)
+    wait_for(function() return float_count() == 0 end)
+    assert.equal(origin, vim.api.nvim_get_current_win())
     assert.equal(target, vim.api.nvim_win_get_buf(origin))
+  end)
+
+  it("closes the float when focus moves to another window", function()
+    vim.cmd("vsplit")
+    local left = vim.api.nvim_get_current_win()
+    vim.cmd("wincmd p")
+    local right = vim.api.nvim_get_current_win()
+
+    open_list("quickfix")
+    vim.api.nvim_set_current_win(left)
+
+    wait_for(function() return float_count() == 0 end)
+    assert.equal(left, vim.api.nvim_get_current_win())
+    assert.is_true(vim.api.nvim_win_is_valid(right))
+  end)
+
+  it("keeps the float open when :copen refreshes the list", function()
+    open_list("quickfix")
+    local first = partition_windows()[1]
+
+    vim.cmd("copen")
+    wait_for(function()
+      local floats, native = partition_windows()
+      return #floats == 1 and #native == 1
+    end)
+
+    local floats = partition_windows()[1]
+    assert.same(first, floats)
     assert.equal(1, float_count())
   end)
 

@@ -243,6 +243,8 @@ end
 --- setting the window up.
 ---@param win integer
 local function _adopt(win)
+  -- A scheduled adoption can outlive `disable()`; drop it.
+  if not M.config.enabled then return end
   if not _is_native(win) then return end
   -- The float is opened in the current tabpage; a window elsewhere keeps its
   -- native split.
@@ -261,11 +263,13 @@ local function _adopt(win)
   local existing = _floats[buf]
   if existing and vim.api.nvim_win_is_valid(existing.win) then
     -- The list is already floating; this is the split that reopened it.
+    -- Focus the float first: closing the current split would raise `WinEnter`
+    -- for the next window and blur-close the float before we get back to it.
+    vim.api.nvim_set_current_win(existing.win)
     local wins = vim.api.nvim_tabpage_list_wins(vim.api.nvim_win_get_tabpage(win))
     if #wins > 1 then
       vim.api.nvim_win_close(win, false)
     end
-    vim.api.nvim_set_current_win(existing.win)
     return
   end
 
@@ -294,6 +298,12 @@ local function _adopt(win)
       _release(state)
       vim.api.nvim_del_augroup_by_id(state.group)
     end,
+  })
+
+  vim.api.nvim_create_autocmd("BufUnload", {
+    group  = state.group,
+    buffer = state.buf,
+    callback = function() _release(state) end,
   })
 
   vim.api.nvim_create_autocmd("VimResized", {
@@ -379,8 +389,10 @@ function M.disable()
     table.insert(states, state)
   end
   _floats = {}
+  _pending = {}
   for _, state in ipairs(states) do
     _release(state)
+    -- Closing the window raises `WinClosed`, which removes the state group.
     if vim.api.nvim_win_is_valid(state.win) then
       vim.api.nvim_win_close(state.win, false)
     end

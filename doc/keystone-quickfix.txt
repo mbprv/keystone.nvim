@@ -17,6 +17,10 @@ rather than a popup.
 Every quickfix and location list window is adopted as it opens, including the
 ones opened by `:make`, `:copen`/`:lopen` and `:cwindow`.
 
+The float is transient: it closes as soon as focus moves to another window.
+Jumping to an entry with `<Enter>` therefore dismisses it, with the entry shown
+in the window you came from.
+
 
 ==============================================================================
 1. Configuration                            *keystone-quickfix-configuration*
@@ -55,7 +59,8 @@ open.
 
 `<C-q>` runs the native command under `:noautocmd`, so the reopened split stays
 a split. Running `:copen` or `:lopen` again while the float is open refreshes
-the list and discards the extra split.
+the list and discards the extra split. Moving focus to any other window closes
+the float, the same as `<Esc>`.
 
 All modules: |keystone-modules|
 
